@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "952486476680",
+    "project_id": "dana-chat-4f437",
+    "storage_bucket": "dana-chat-4f437.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952486476680:android:d05921f03fb54c7e89583d",
+        "android_client_info": {
+          "package_name": "com.example.dana_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952486476680-b87dupfp6ahd0sd4o97h5larrmlolh70.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS84J8tcTuED7Dgw0Glt6cAYDeiZbEwAw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952486476680-b87dupfp6ahd0sd4o97h5larrmlolh70.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "952486476680-c64hcr6djsmb7pavorfnipv9a8h3h34m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.danaChat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

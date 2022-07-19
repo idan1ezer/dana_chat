@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -45,13 +46,13 @@ class _LoginPageState extends State<LoginPage> {
                     border: Border.all(color: Colors.white),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Email",
-                      ),
+
+                  child: const TextField(
+                    textAlign: TextAlign.right,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(CupertinoIcons.mail_solid),
+                      border: InputBorder.none,
+                      hintText: "אימייל",
                     ),
                   ),
                 ),
@@ -67,14 +68,13 @@ class _LoginPageState extends State<LoginPage> {
                     border: Border.all(color: Colors.white),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Password",
-                      ),
+                  child: const TextField(
+                    textAlign: TextAlign.right,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(CupertinoIcons.lock_fill),
+                      border: InputBorder.none,
+                      hintText: "סיסמא",
                     ),
                   ),
                 ),

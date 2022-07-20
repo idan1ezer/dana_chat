@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:dana_chat/pages/pages.dart';
+import 'package:dana_chat/screens/screens.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: RegisterPage(),
+      home: HomeScreen(),
     );
   }
 }

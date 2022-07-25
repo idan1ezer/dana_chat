@@ -10,10 +10,10 @@ class HomeScreen extends StatelessWidget {
   );
   HomeScreen({Key? key}) : super(key: key);
 
-  final ValueNotifier<int> pageIndex = ValueNotifier(0);
+  final ValueNotifier<int> pageIndex = ValueNotifier(1);
   final ValueNotifier<String> title = ValueNotifier("הודעות");
 
-  final pages = const [ProfilePage(), MessagesPage()];
+  final pages = const [ProfilePage(), ChatPage()];
   final pageTitles = const ["פרופיל", "הודעות"];
 
   void _onNavigationItemSelected(index) {
@@ -24,50 +24,50 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple[300],
-        centerTitle: true,
-        title: ValueListenableBuilder(
-          valueListenable: title,
-          builder: (BuildContext context, String value, _) {
-            return Text(
-              value,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            );
-          },
-        ),
-        leadingWidth: 54,
-        leading: Align(
-          alignment: Alignment.centerRight,
-          child: ElevatedButton(
-            onPressed: () {debugPrint("TODO search");},
-            style: ElevatedButton.styleFrom(primary: Colors.purple[300]),
-            child: const Icon(
-                Icons.search
-            ),
-          ),
-          // child: IconBackground(
-          //   icon: Icons.search,
-          //   onTap: (){
-          //     debugPrint("TODO search");
-          //   },
-          // ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 24),
-            child: Hero(
-              tag: 'hero-profile-picture',
-              child: Avatar.small(
-                url: "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png",
-                onTap: (){
-                  debugPrint("TODO move to profile page");
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.purple[300],
+      //   centerTitle: true,
+      //   title: ValueListenableBuilder(
+      //     valueListenable: title,
+      //     builder: (BuildContext context, String value, _) {
+      //       return Text(
+      //         value,
+      //         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      //       );
+      //     },
+      //   ),
+      //   leadingWidth: 54,
+      //   leading: Align(
+      //     alignment: Alignment.centerRight,
+      //     child: ElevatedButton(
+      //       onPressed: () {debugPrint("TODO search");},
+      //       style: ElevatedButton.styleFrom(primary: Colors.purple[300]),
+      //       child: const Icon(
+      //           Icons.search
+      //       ),
+      //     ),
+      //     // child: IconBackground(
+      //     //   icon: Icons.search,
+      //     //   onTap: (){
+      //     //     debugPrint("TODO search");
+      //     //   },
+      //     // ),
+      //   ),
+      //   actions: [
+      //     Padding(
+      //       padding: const EdgeInsets.only(right: 24),
+      //       child: Hero(
+      //         tag: 'hero-profile-picture',
+      //         child: Avatar.small(
+      //           url: "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png",
+      //           onTap: (){
+      //             debugPrint("TODO move to profile page");
+      //           },
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: ValueListenableBuilder(
         valueListenable: pageIndex,
         builder: (BuildContext context, int value, _) {
@@ -104,9 +104,9 @@ class _BottomNavigationBarState extends State<_BottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
+    //final brightness = Theme.of(context).brightness;
     return Card(
-      color: (brightness == Brightness.light) ? Colors.transparent : null,
+      color: Colors.purple[50],
       elevation: 0,
       margin: const EdgeInsets.all(0),
       child: SafeArea(

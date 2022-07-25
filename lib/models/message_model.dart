@@ -10,7 +10,7 @@ class MessageModel {
     required this.time,
     required this.unread
   });
-  final User sender;
+  final UserModel sender;
   final String text;
   //final DateTime messageDate;
   final String time;
@@ -28,25 +28,25 @@ class MessageModel {
 
 
 // YOU - current user
-final User currentUser = User(
-  id: 0,
+final UserModel currentUser = UserModel(
+  id: "0",
   name: 'Current User',
   imageUrl: 'assets/images/greg.jpg',
 );
 
 // USERS
-final User julia = User(
-  id: 1,
+final UserModel julia = UserModel(
+  id: "1",
   name: 'Julia',
   imageUrl: 'https://unsplash.com/photos/mEZ3PoFGs_k/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHx8fDE2NTgyOTQzMTQ&force=true&w=640',
 );
-final User james = User(
-  id: 2,
+final UserModel james = UserModel(
+  id: "2",
   name: 'James',
   imageUrl: 'https://unsplash.com/photos/5OyGRn_r9Y4/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8Nnx8cHJvZmlsZXxlbnwwfHx8fDE2NTgyOTQzMTQ&force=true&w=640',
 );
-final User dana = User(
-  id: 3,
+final UserModel dana = UserModel(
+  id: "3",
   name: 'Dana',
   imageUrl: 'https://unsplash.com/photos/rDEOVtE7vOs/download?ixid=MnwxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNjU4MzE0MjQx&force=true&w=640',
 );

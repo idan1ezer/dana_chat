@@ -13,8 +13,8 @@ class HomeScreen extends StatelessWidget {
   final ValueNotifier<int> pageIndex = ValueNotifier(1);
   final ValueNotifier<String> title = ValueNotifier("הודעות");
 
-  final pages = const [ProfilePage(), ChatPage()];
-  final pageTitles = const ["פרופיל", "הודעות"];
+  final pages = const [SettingsPage(), ChatPage()];
+  final pageTitles = const ["הגדרות", "הודעות"];
 
   void _onNavigationItemSelected(index) {
     title.value = pageTitles[index];
@@ -119,8 +119,8 @@ class _BottomNavigationBarState extends State<_BottomNavigationBar> {
             children: [
               _NavigationBarItem(
                 index: 0,
-                lable: "פרופיל",
-                icon: CupertinoIcons.person_circle_fill,
+                lable: "הגדרות",
+                icon: Icons.settings,
                 isSelected: (selectedIndex == 0),
                 onTap: handleItemSelected,
               ),

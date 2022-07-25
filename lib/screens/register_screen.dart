@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dana_chat/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final passwordCtrl = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
 
   // string for displaying the error Message
   String? errorMessage;
@@ -116,6 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: TextField(
                     controller: passwordCtrl,
                     textAlign: TextAlign.right,
+                    obscureText: true,
                     decoration: const InputDecoration(
                       suffixIcon: Icon(CupertinoIcons.lock_fill),
                       border: InputBorder.none,
@@ -149,6 +153,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           email: email,
           password: password,
         );
+        //final user = UserModel(id: _auth.currentUser.toString(), name: name, imageUrl: "");
+        final user = {
+          "id": _auth.currentUser?.uid.toString(),
+          "name": name,
+          "image_url": " "
+        };
+        db.collection("users").doc(user["id"]).set(user).onError((error, stackTrace) => errorMessage = error.toString());
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
           case "invalid-email":

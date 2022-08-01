@@ -1,3 +1,6 @@
+import 'package:dana_chat/pages/chat_btns_page.dart';
+import 'package:dana_chat/pages/chat_combined_page.dart';
+import 'package:dana_chat/pages/chats_history_page.dart';
 import 'package:dana_chat/widgets/avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +16,8 @@ class HomeScreen extends StatelessWidget {
   final ValueNotifier<int> pageIndex = ValueNotifier(1);
   final ValueNotifier<String> title = ValueNotifier("הודעות");
 
-  final pages = const [SettingsPage(), ChatPage()];
-  final pageTitles = const ["הגדרות", "הודעות"];
+  final pages = const [SettingsPage(), ChatCombinedPage(), ChatsHistoryPage()];
+  final pageTitles = const ["הגדרות", "הודעות","היסטורית שיחות"];
 
   void _onNavigationItemSelected(index) {
     title.value = pageTitles[index];
@@ -129,6 +132,13 @@ class _BottomNavigationBarState extends State<_BottomNavigationBar> {
                 lable: "הודעות",
                 icon: CupertinoIcons.bubble_left_bubble_right_fill,
                 isSelected: (selectedIndex == 1),
+                onTap: handleItemSelected,
+              ),
+              _NavigationBarItem(
+                index: 2,
+                lable: "היסטוריה",
+                icon: Icons.history_sharp,
+                isSelected: (selectedIndex == 2),
                 onTap: handleItemSelected,
               ),
             ],

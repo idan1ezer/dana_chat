@@ -28,16 +28,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        backgroundColor: Colors.purple[300],
+        centerTitle: true,
+        title: const Text(
+          "הרשמה",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: Column(
             children: [
               const SizedBox(
                 height: 25,
-              ),
-              const Text(
-                "הרשמה",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               ),
               const SizedBox(
                 height: 20,

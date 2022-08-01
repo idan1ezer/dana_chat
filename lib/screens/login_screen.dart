@@ -24,6 +24,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        backgroundColor: Colors.purple[300],
+        centerTitle: true,
+        title: const Text(
+          "התחברות",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: Column(
@@ -108,7 +116,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+                      },
                       child: const Text(
                         "!הירשם עכשיו",
                         style: TextStyle(

@@ -1,5 +1,9 @@
+import 'package:dana_chat/models/message_model.dart';
+import 'package:dana_chat/widgets/avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_settings_screens/flutter_settings_screens.dart';
+import 'package:dana_chat/widgets/icon_widget.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -9,7 +13,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
   final languages = ["Heberew", "English", "Arabic"];
   String? value;
   final passwordCtrl = TextEditingController();
@@ -25,49 +28,76 @@ class _SettingsPageState extends State<SettingsPage> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.purple[50],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Color(0xFFBA68C8), width: 4),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    DropdownButton<String>(
-                      value: value,
-                      iconSize: 36,
-                      icon: const Icon(Icons.arrow_drop_down, color: Color(0xFFBA68C8)),
-                      items: languages.map(buildMenuItem).toList(),
-                      onChanged: (value) => setState(() => this.value = value),
-                    ),
-                    SizedBox(width: 50,),
-                    const Text("שפה", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),)
-                  ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              color: Colors.purple[100],
+              margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+              child: ListTile(
+                title: Text(currentUser.name,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.right),
+                trailing: Avatar.small(
+                  url:
+                      "https://s3.eu-west-3.amazonaws.com/dealna/images/Virtual-Assist5-20201231125231.jpg",
+                  onTap: () {},
                 ),
-                SizedBox(height: 10,),
-              ],
+                leading: Icon(Icons.edit),
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 10,),
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              color: Colors.purple[50],
+              margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+              child: Column(
+                children: [
+                  ListTile(
+                    trailing: Icon(Icons.lock, color: Colors.purple,),
+                    title: Text("שינוי סיסמא", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
+                    leading: Icon(Icons.keyboard_arrow_down),
+                    onTap: (){},
+                  ),
+                  _buildDivider(),
+                  ListTile(
+                    trailing: Icon(Icons.g_translate, color: Colors.purple,),
+                    title: Text("שפה", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
+                    leading: Icon(Icons.keyboard_arrow_down),
+                    onTap: (){},
+                  ),
+                  _buildDivider(),
+                  ListTile(
+                    trailing: Icon(Icons.feedback, color: Colors.purple,),
+                    title: Text("שליחת משוב", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
+                    leading: Icon(Icons.keyboard_arrow_down),
+                    onTap: (){},
+                  ),_buildDivider(),
+                  ListTile(
+                    trailing: Icon(Icons.logout, color: Colors.purple,),
+                    title: Text("התנתקות", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
+                    onTap: (){},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+  Widget _buildDivider() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      width: double.infinity,
+      height: 1,
+      color: Colors.grey,
+    );
+  }
 
-  DropdownMenuItem<String> buildMenuItem(String item) =>
-      DropdownMenuItem(
-        value: item,
-        child: Text(
-          item,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-      );
+
 }
-

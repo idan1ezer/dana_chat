@@ -2,7 +2,6 @@ import 'package:dana_chat/models/message_model.dart';
 import 'package:dana_chat/widgets/avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:dana_chat/widgets/icon_widget.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -13,9 +12,14 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final languages = ["Heberew", "English", "Arabic"];
+  final languages = ["עברית", "English", "عربي"];
   String? value;
   final passwordCtrl = TextEditingController();
+
+  int selectedLanguage = -1;
+  bool isVisiblePassword = false;
+  bool isVisibleLanguage = false;
+  bool isVisibleFeedback = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,8 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             Card(
               elevation: 8,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
               color: Colors.purple[100],
               margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
               child: ListTile(
@@ -49,38 +54,150 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: Icon(Icons.edit),
               ),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
               color: Colors.purple[50],
               margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
               child: Column(
                 children: [
                   ListTile(
-                    trailing: Icon(Icons.lock, color: Colors.purple,),
-                    title: Text("שינוי סיסמא", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
+                    trailing: Icon(
+                      Icons.lock,
+                      color: Colors.purple,
+                    ),
+                    title: Text("שינוי סיסמא",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.right),
                     leading: Icon(Icons.keyboard_arrow_down),
-                    onTap: (){},
+                    onTap: () {
+                      setState(() {
+                        isVisiblePassword = !isVisiblePassword;
+                        isVisibleLanguage = false;
+                        isVisibleFeedback = false;
+                      });
+                    },
+                  ),
+                  Visibility(
+                    visible: isVisiblePassword,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.purple),
+                            onPressed: () {
+                              changePassword(passwordCtrl.text);
+                            },
+                            child: const Text(
+                              "שנה",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          Expanded(
+                            child: TextField(
+                              controller: passwordCtrl,
+                              textAlign: TextAlign.right,
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "הקלד סיסמא חדשה",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   _buildDivider(),
                   ListTile(
-                    trailing: Icon(Icons.g_translate, color: Colors.purple,),
-                    title: Text("שפה", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
+                    trailing: Icon(
+                      Icons.g_translate,
+                      color: Colors.purple,
+                    ),
+                    title: Text("שפה",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.right),
                     leading: Icon(Icons.keyboard_arrow_down),
-                    onTap: (){},
+                    onTap: () {
+                      setState(() {
+                        isVisiblePassword = false;
+                        isVisibleLanguage = !isVisibleLanguage;
+                        isVisibleFeedback = false;
+                      });
+                    },
+                  ),
+                  Visibility(
+                    visible: isVisibleLanguage,
+                    child: ListView(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      children: [
+                        RadioListTile<int>(
+                            value: 0,
+                            groupValue: selectedLanguage,
+                            title: Text(
+                              languages[0],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                              textAlign: TextAlign.end,
+                            ),
+                            controlAffinity: ListTileControlAffinity.trailing,
+                            onChanged: (value) =>
+                                setState(() => selectedLanguage = 0)),
+                        RadioListTile<int>(
+                            value: 1,
+                            groupValue: selectedLanguage,
+                            title: Text(
+                              languages[1],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                              textAlign: TextAlign.end,
+                            ),
+                            controlAffinity: ListTileControlAffinity.trailing,
+                            onChanged: (value) =>
+                                setState(() => selectedLanguage = 1)),
+                        RadioListTile<int>(
+                            value: 2,
+                            groupValue: selectedLanguage,
+                            title: Text(
+                              languages[2],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                              textAlign: TextAlign.end,
+                            ),
+                            controlAffinity: ListTileControlAffinity.trailing,
+                            onChanged: (value) =>
+                                setState(() => selectedLanguage = 2))
+                      ],
+                    ),
                   ),
                   _buildDivider(),
                   ListTile(
-                    trailing: Icon(Icons.feedback, color: Colors.purple,),
-                    title: Text("שליחת משוב", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
+                    trailing: Icon(
+                      Icons.feedback,
+                      color: Colors.purple,
+                    ),
+                    title: Text("שליחת משוב",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.right),
                     leading: Icon(Icons.keyboard_arrow_down),
-                    onTap: (){},
-                  ),_buildDivider(),
-                  ListTile(
-                    trailing: Icon(Icons.logout, color: Colors.purple,),
-                    title: Text("התנתקות", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), textAlign: TextAlign.right),
-                    onTap: (){},
+                    onTap: () {
+                      setState(() {
+                        isVisiblePassword = false;
+                        isVisibleLanguage = false;
+                        isVisibleFeedback = !isVisibleFeedback;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -90,6 +207,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+
   Widget _buildDivider() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -99,5 +217,20 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void changePassword(String password) {
+    // need to change pw
+  }
+}
 
+class Item {
+  const Item({
+    Key? key,
+    required this.title,
+    required this.icon,
+    required this.widget,
+  });
+
+  final String title;
+  final Icon icon;
+  final Widget widget;
 }

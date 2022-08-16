@@ -3,6 +3,7 @@ import 'package:dana_chat/widgets/avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dana_chat/widgets/icon_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -217,8 +218,15 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void changePassword(String password) {
+  Future<void> changePassword(String password) async {
     // need to change pw
+
+   final user = FirebaseAuth.instance.currentUser;
+    //final userCredential =
+        //await FirebaseAuth.instance.signInWithCredential(credential);
+    //final user = userCredential.user;
+    await user?.updatePassword(password);
+
   }
 }
 

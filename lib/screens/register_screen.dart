@@ -19,6 +19,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _educationSelectedVal = _educationList[0];
   }
 
+  late VoidCallback _onStepContinue;
+  late VoidCallback _onStepCancel;
+
   final nameCtrl = TextEditingController();
   //final emailCtrl = TextEditingController();
   final phoneCtrl = TextEditingController();
@@ -46,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             state:
                 _activeStepIndex <= 0 ? StepState.indexed : StepState.complete,
             isActive: _activeStepIndex >= 0,
-            title: Text("שלב"),
+            title: const Text("שלב"),
             content: Center(
               child: Column(
                 children: [
@@ -55,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     icon: CupertinoIcons.person_circle_fill,
                     hint: "שם מלא",
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
@@ -105,7 +108,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Expanded(
@@ -153,7 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
@@ -174,15 +177,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               });
                             });
                           },
+                          style: ElevatedButton.styleFrom(primary: Colors.purple),
                           child: Text(
                             _dateTime == null
                                 ? 'בחר תאריך לידה'
                                 : formatter.format(_dateTime!),
-                            style: const TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Expanded(
@@ -195,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
@@ -245,7 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Expanded(
@@ -293,7 +297,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   RegTextField(textCtrl: employeeCtrl, icon: Icons.cases_rounded, hint: "תעסוקה", maxLines: 3,)
@@ -304,16 +308,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
             state:
                 _activeStepIndex <= 1 ? StepState.indexed : StepState.complete,
             isActive: _activeStepIndex >= 1,
-            title: Text("שלב"),
-            content: Center(
+            title: const Text("שלב"),
+            content: const Center(
               child: Text("שלב 2"),
             )),
         Step(
             state:
                 _activeStepIndex <= 2 ? StepState.indexed : StepState.complete,
             isActive: _activeStepIndex >= 2,
-            title: Text("שלב"),
-            content: Center(
+            title: const Text("שלב"),
+            content: const Center(
               child: Text("שלב 3"),
             ))
       ];
@@ -334,6 +338,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
       body: Stepper(
+        controlsBuilder: (BuildContext context, ControlsDetails dtl){
+          return Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: dtl.onStepContinue,
+                  style: ElevatedButton.styleFrom(primary: Colors.purple),
+                  child: const Text(
+                      'הבא',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                ElevatedButton(
+                  onPressed: dtl.onStepCancel,
+                  style: ElevatedButton.styleFrom(primary: Colors.purple),
+                  child: const Text(
+                    'חזור',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
         type: StepperType.horizontal,
         currentStep: _activeStepIndex,
         steps: stepList(),

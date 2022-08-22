@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:dana_chat/models/clinic_model.dart';
+//import 'package:dana_chat/models/doctor_model.dart';
 import 'package:dana_chat/widgets/regWidgets/regWidgets.dart';
+import 'package:dana_chat/models/residentialStatus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +31,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //final passwordCtrl = TextEditingController();
   final employeeCtrl = TextEditingController();
 
+  final countryCtrl = TextEditingController();
+  final cityCtrl = TextEditingController();
+  final zipCtrl = TextEditingController();
+  final addressCtrl = TextEditingController();
+
+  //final Clinic meir = Clinic("מאיר", 1);
+
   final _genderList = ["זכר", "נקבה"];
   String? _genderSelectedVal = "";
   final _educationList = ["ללא", "12 שנות לימוד", "תואר ראשון", "תואר שני"];
@@ -35,9 +45,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _languageList = ["עברית", "אנגלית", "רוסית", "ערבית", "ספרדית"];
   String? _lang1SelectedVal = "";
   String? _lang2SelectedVal = "";
+  //final _clinicList = [Clinic("מאיר", 1), Clinic("איכילוב", 2), Clinic("העמק", 3)];
+  final _clinics = {'מאיר':'1', 'איכילוב':'2', 'העמק':'3'};
+  String? _clinicSelectedVal = "מאיר";
+  final List _clinicList = [];
+  //final _doctorList = [Doctor("רופא א'", 1), Doctor("רופא ב'", 1), Doctor("רופא ג'", 1), Doctor("רופא ד'", 2), Doctor("רופא ה'", 3)];
+  final _doctors = {'אייל כהן':'1', 'סיוון':'1', 'יעל':'1', 'שמעון':'2', 'לירון':'3'};
+  String? _doctorSelectedVal = "";
+  final List _doctorList = [];
+  //final List<dynamic> _doctorListUpdated = [Doctor("רופא א'", 1)];
+
+  @override
+  void initState() {
+    super.initState();
+    clinicToList();
+    //doctorToList();
+  }
+
 
   DateTime? _dateTime;
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
+
+  List<ResidentialStatus> residentialStatus = [
+    ResidentialStatus("Value 1", "info info info", false),
+    ResidentialStatus("Value 2", "info info info", false),
+    ResidentialStatus("Value 3", "info info info", false),
+    ResidentialStatus("Value 4", "info info info", false),
+    //ResidentialStatus("Value 5", "info info info", false),
+  ];
+  List<ResidentialStatus> selectedStatus = [];
+
 
   final _auth = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
@@ -45,22 +82,331 @@ class _RegisterScreenState extends State<RegisterScreen> {
   int _activeStepIndex = 0;
 
   List<Step> stepList() => [
+    Step(
+        state:
+        _activeStepIndex <= 0 ? StepState.indexed : StepState.complete,
+        isActive: _activeStepIndex >= 0,
+        title: const Text(""),
+        content: Center(
+          child: Column(
+            children: [
+              RegTextField(
+                textCtrl: nameCtrl,
+                icon: CupertinoIcons.person_circle_fill,
+                hint: "שם מלא",
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                //mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonFormField(
+                        value: _educationList[0],
+                        items: _educationList
+                            .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            e,
+                            textAlign: TextAlign.right,
+                          ),
+                        ))
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _educationSelectedVal = val as String;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.arrow_drop_down_circle,
+                          //color: Colors.purple,
+                        ),
+                        dropdownColor: Colors.deepPurple.shade50,
+                        decoration: const InputDecoration(
+                          labelText: "השכלה",
+                          labelStyle: TextStyle(color: Colors.purple),
+                          prefixIcon: Icon(
+                            CupertinoIcons.pencil,
+                            color: Colors.purple,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.transparent)),
+                          //border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonFormField(
+                        value: _genderList[0],
+                        items: _genderList
+                            .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            e,
+                            textAlign: TextAlign.right,
+                          ),
+                        ))
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _genderSelectedVal = val as String;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.arrow_drop_down_circle,
+                          //color: Colors.purple,
+                        ),
+                        dropdownColor: Colors.deepPurple.shade50,
+                        decoration: const InputDecoration(
+                          labelText: "מין",
+                          labelStyle: TextStyle(color: Colors.purple,),
+                          prefixIcon: Icon(
+                            Icons.accessibility_new,
+                            color: Colors.purple,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.transparent)),
+                          //border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime(2099))
+                            .then((date) {
+                          setState(() {
+                            _dateTime = date;
+                          });
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(primary: Colors.purple),
+                      child: Text(
+                        _dateTime == null
+                            ? 'בחר תאריך לידה'
+                            : formatter.format(_dateTime!),
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: RegTextField(
+                      textCtrl: phoneCtrl,
+                      icon: CupertinoIcons.phone_fill,
+                      hint: "נייד",
+                      inputType: TextInputType.phone,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                //mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonFormField(
+                        value: _languageList[0],
+                        items: _languageList
+                            .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            e,
+                            textAlign: TextAlign.right,
+                          ),
+                        ))
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _lang2SelectedVal = val as String;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.arrow_drop_down_circle,
+                          //color: Colors.purple,
+                        ),
+                        dropdownColor: Colors.deepPurple.shade50,
+                        decoration: const InputDecoration(
+                          labelText: "שפה שניה",
+                          labelStyle: TextStyle(color: Colors.purple,),
+                          prefixIcon: Icon(
+                            Icons.translate,
+                            color: Colors.purple,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.transparent)),
+                          //border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonFormField(
+                        value: _languageList[0],
+                        items: _languageList
+                            .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            e,
+                            textAlign: TextAlign.right,
+                          ),
+                        ))
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _lang1SelectedVal = val as String;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.arrow_drop_down_circle,
+                          //color: Colors.purple,
+                        ),
+                        dropdownColor: Colors.deepPurple.shade50,
+                        decoration: const InputDecoration(
+                          labelText: "שפת אם",
+                          labelStyle: TextStyle(color: Colors.purple),
+                          prefixIcon: Icon(
+                            Icons.translate,
+                            color: Colors.purple,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.transparent)),
+                          //border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              RegTextField(textCtrl: employeeCtrl, icon: Icons.cases_rounded, hint: "תעסוקה", maxLines: 3,)
+            ],
+          ),
+        )),
+    Step(
+        state:
+        _activeStepIndex <= 1 ? StepState.indexed : StepState.complete,
+        isActive: _activeStepIndex >= 1,
+        title: const Text(""),
+        content: Center(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: RegTextField(
+                      textCtrl: zipCtrl,
+                      icon: Icons.numbers,
+                      hint: "זיפ",
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: RegTextField(
+                      textCtrl: cityCtrl,
+                      icon: Icons.location_city,
+                      hint: "עיר",
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: RegTextField(
+                      textCtrl: countryCtrl,
+                      icon: Icons.flag,
+                      hint: "מדינה",
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              RegTextField(
+                textCtrl: addressCtrl,
+                icon: Icons.home,
+                hint: "כתובת",
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              ListView.builder(shrinkWrap: true, itemCount: residentialStatus.length ,itemBuilder: (BuildContext context, int index){
+                return _residentialItem(residentialStatus[index].title, residentialStatus[index].info, residentialStatus[index].isSelected, index);
+              }
+              ),
+            ],
+          ),
+        )),
         Step(
             state:
-                _activeStepIndex <= 0 ? StepState.indexed : StepState.complete,
-            isActive: _activeStepIndex >= 0,
-            title: const Text("שלב"),
+                _activeStepIndex <= 2 ? StepState.indexed : StepState.complete,
+            isActive: _activeStepIndex >= 2,
+            title: const Text(""),
             content: Center(
               child: Column(
                 children: [
-                  RegTextField(
-                    textCtrl: nameCtrl,
-                    icon: CupertinoIcons.person_circle_fill,
-                    hint: "שם מלא",
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
                   Row(
                     //mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -73,31 +419,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: DropdownButtonFormField(
-                            value: _educationList[0],
-                            items: _educationList
-                                .map((e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(
-                                e,
-                                textAlign: TextAlign.right,
-                              ),
-                            ))
-                                .toList(),
+                            value: _doctorSelectedVal,
                             onChanged: (val) {
                               setState(() {
-                                _educationSelectedVal = val as String;
+                                //_doctorList.clear();
+                                //doctorToList(_clinics[val]);
+                                //debugPrint(_clinics[val]);
+                                _doctorSelectedVal = val as String;
                               });
                             },
+                            items: _doctorList.map((doctor) {
+                              return DropdownMenuItem(
+                                value: doctor,
+                                child: Text(doctor, textAlign: TextAlign.right),
+                              );
+                            }).toList(),
                             icon: const Icon(
                               Icons.arrow_drop_down_circle,
                               //color: Colors.purple,
                             ),
                             dropdownColor: Colors.deepPurple.shade50,
                             decoration: const InputDecoration(
-                              labelText: "השכלה",
-                              labelStyle: TextStyle(color: Colors.purple),
+                              labelText: "רופא",
+                              labelStyle: TextStyle(color: Colors.purple,),
                               prefixIcon: Icon(
-                                CupertinoIcons.pencil,
+                                Icons.healing,
                                 color: Colors.purple,
                               ),
                               enabledBorder: UnderlineInputBorder(
@@ -119,172 +465,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: DropdownButtonFormField(
-                            value: _genderList[0],
-                            items: _genderList
-                                .map((e) => DropdownMenuItem(
-                                      value: e,
-                                      child: Text(
-                                        e,
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ))
-                                .toList(),
+                            value: _clinicSelectedVal,
                             onChanged: (val) {
-                              setState(() {
-                                _genderSelectedVal = val as String;
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.arrow_drop_down_circle,
-                              //color: Colors.purple,
-                            ),
-                            dropdownColor: Colors.deepPurple.shade50,
-                            decoration: const InputDecoration(
-                              labelText: "מין",
-                              labelStyle: TextStyle(color: Colors.purple,),
-                              prefixIcon: Icon(
-                                Icons.accessibility_new,
-                                color: Colors.purple,
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent)),
-                              //border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2099))
-                                .then((date) {
-                              setState(() {
-                                _dateTime = date;
-                              });
+                            setState(() {
+                              _doctorList.clear();
+                              doctorToList(_clinics[val]);
+                              _clinicSelectedVal = val as String;
                             });
-                          },
-                          style: ElevatedButton.styleFrom(primary: Colors.purple),
-                          child: Text(
-                            _dateTime == null
-                                ? 'בחר תאריך לידה'
-                                : formatter.format(_dateTime!),
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: RegTextField(
-                          textCtrl: phoneCtrl,
-                          icon: CupertinoIcons.phone_fill,
-                          hint: "נייד",
-                          inputType: TextInputType.phone,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    //mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: DropdownButtonFormField(
-                            value: _languageList[0],
-                            items: _languageList
-                                .map((e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(
-                                e,
-                                textAlign: TextAlign.right,
-                              ),
-                            ))
-                                .toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                _lang2SelectedVal = val as String;
-                              });
                             },
+                            items: _clinicList.map((clinic) {
+                              return DropdownMenuItem(
+                                  value: clinic,
+                                  child: Text(clinic, textAlign: TextAlign.right),
+                              );
+                            }).toList(),
+
                             icon: const Icon(
                               Icons.arrow_drop_down_circle,
                               //color: Colors.purple,
                             ),
                             dropdownColor: Colors.deepPurple.shade50,
                             decoration: const InputDecoration(
-                              labelText: "שפה שניה",
-                              labelStyle: TextStyle(color: Colors.purple,),
-                              prefixIcon: Icon(
-                                Icons.translate,
-                                color: Colors.purple,
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                  BorderSide(color: Colors.transparent)),
-                              //border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: DropdownButtonFormField(
-                            value: _languageList[0],
-                            items: _languageList
-                                .map((e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(
-                                e,
-                                textAlign: TextAlign.right,
-                              ),
-                            ))
-                                .toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                _lang1SelectedVal = val as String;
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.arrow_drop_down_circle,
-                              //color: Colors.purple,
-                            ),
-                            dropdownColor: Colors.deepPurple.shade50,
-                            decoration: const InputDecoration(
-                              labelText: "שפת אם",
+                              labelText: "קליניקה",
                               labelStyle: TextStyle(color: Colors.purple),
                               prefixIcon: Icon(
-                                Icons.translate,
+                                Icons.local_hospital,
                                 color: Colors.purple,
                               ),
                               enabledBorder: UnderlineInputBorder(
@@ -297,36 +502,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  RegTextField(textCtrl: employeeCtrl, icon: Icons.cases_rounded, hint: "תעסוקה", maxLines: 3,)
                 ],
               ),
             )),
         Step(
             state:
-                _activeStepIndex <= 1 ? StepState.indexed : StepState.complete,
-            isActive: _activeStepIndex >= 1,
-            title: const Text("שלב"),
+            _activeStepIndex <= 3 ? StepState.indexed : StepState.complete,
+            isActive: _activeStepIndex >= 3,
+            title: const Text(""),
             content: const Center(
-              child: Text("שלב 2"),
+              child: Text("שלב 4"),
             )),
         Step(
             state:
-                _activeStepIndex <= 2 ? StepState.indexed : StepState.complete,
-            isActive: _activeStepIndex >= 2,
-            title: const Text("שלב"),
+            _activeStepIndex <= 4 ? StepState.indexed : StepState.complete,
+            isActive: _activeStepIndex >= 4,
+            title: const Text(""),
             content: const Center(
-              child: Text("שלב 3"),
+              child: Text("שלב 5"),
             ))
       ];
 
   // string for displaying the error Message
   String? errorMessage;
 
+  Widget _residentialItem(String title, String info, bool isSelected, int index) {
+    return ListTile(
+      trailing: isSelected ? Icon(Icons.check_circle, color: Colors.purple,) : Icon(Icons.check_circle_outline, color: Colors.grey,),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w500), textAlign: TextAlign.right),
+      subtitle: Text(info, textAlign: TextAlign.right),
+      onTap: () {
+        setState((){
+          residentialStatus[index].isSelected = !residentialStatus[index].isSelected;
+          if (residentialStatus[index].isSelected == true) {
+            selectedStatus.add(ResidentialStatus(title, info, true));
+          }
+          else if (residentialStatus[index].isSelected == false) {
+            selectedStatus.removeWhere((element) => element.title == selectedStatus[index].title);
+          }
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
@@ -496,6 +717,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       //   ),
       // ),
     );
+
+
   }
 
   void signUp(String name, String email, String phone, String password) async {
@@ -561,4 +784,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     return true;
   }
+
+  // void updateDoctorList() {
+  //   _doctorListUpdated.clear();
+  //   for (Doctor doc in _doctorList) {
+  //     if (doc.clinicCode.toString() == _clinicSelectedVal) {
+  //       _doctorListUpdated.add(doc);
+  //     }
+  //   }
+  // }
+
+  void clinicToList(){
+    _clinics.forEach((key, value) {
+      _clinicList.add(key);
+    });
+    //_doctorList.add('1');
+  }
+
+  doctorToList(clinicCode){
+    _doctors.forEach((key, value) {
+      debugPrint(clinicCode + " - " + value);
+      if(clinicCode == value) {
+        _doctorList.add(key);
+      }
+    });
+    _doctorSelectedVal = _doctors[0];
+  }
+
 }

@@ -29,6 +29,7 @@ class RegTextField extends StatelessWidget {
           suffixIcon: Icon(icon),
           border: InputBorder.none,
           hintText: hint,
+          hintStyle: const TextStyle(fontSize: 12 ),
         ),
       ),
     );

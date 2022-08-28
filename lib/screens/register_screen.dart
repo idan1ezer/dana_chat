@@ -49,6 +49,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final exercisePowerCtrl = TextEditingController();
   final dietitianBMICtrl = TextEditingController();
 
+  final fastDiabetesFromCtrl = TextEditingController();
+  final fastDiabetesToCtrl = TextEditingController();
+  final afterMealDiabetesFromCtrl = TextEditingController();
+  final afterMealDiabetesToCtrl = TextEditingController();
+
+  final medicationMorningCtrl = TextEditingController();
+  final medicationNoonCtrl = TextEditingController();
+  final medicationEveningCtrl = TextEditingController();
+  final medicationNightCtrl = TextEditingController();
+
+  final test1stCtrl = TextEditingController();
+  final test2ndCtrl = TextEditingController();
+
   //final Clinic meir = Clinic("מאיר", 1);
 
   final _genderList = ["זכר", "נקבה"];
@@ -85,9 +98,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
     "Giardiasis"
   ];
   String? _diseaseSelectedVal = "";
-
   final personalDiseases = {};
   final personalDiseasesKeyList = [];
+
+  final _medicationList = [
+    "Insulin",
+    "Amylinomimetic",
+    "Alpha-glucosidase",
+    "Biguanides",
+    "Dopamine agonist",
+    "Meglitinides"
+  ];
+  String? _medicationSelectedVal = "";
+  final personalMedications = {};
+  final personalMedicationsKeyList = [];
+
+  final _testList = [
+    "Bicarbonate Test",
+    "Bilirubin Test",
+    "Insulin Test",
+    "Globulin Test",
+    "HBsAg Test",
+    "Iron Test"
+  ];
+  String? _testSelectedVal = "";
+  final personalTests = {};
+  final personalTestsKeyList = [];
 
   @override
   void initState() {
@@ -99,6 +135,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   DateTime? _birthDate;
   DateTime? _dietitianDate;
   DateTime? _diseaseDate;
+  DateTime? _testDate;
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
   List<ResidentialStatus> residentialStatus = [
@@ -771,16 +808,282 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(
                     height: 10,
                   ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          addDiseaseToList(_diseaseSelectedVal,
+                              formatter.format(_diseaseDate!));
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(primary: Colors.purple),
+                      child: const Text(
+                        "הוסף מחלת רקע",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.purple[50],
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        itemCount: personalDiseasesKeyList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 50.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(personalDiseasesKeyList[index]),
+                                Text(personalDiseases[
+                                    personalDiseasesKeyList[index]]),
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        removeDiseaseFromList(
+                                            personalDiseasesKeyList[index]);
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.remove_circle,
+                                      color: Colors.grey,
+                                      size: 15,
+                                    ))
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            )),
+        Step(
+            state:
+                _activeStepIndex <= 4 ? StepState.indexed : StepState.complete,
+            isActive: _activeStepIndex >= 4,
+            title: const Text(""),
+            content: Center(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15, left: 35),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("טווח סוכר בצום"),
+                        Text("טווח סוכר אחרי ארוחה"),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: fastDiabetesToCtrl,
+                          icon: Icons.numbers,
+                          hint: "עד",
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: fastDiabetesFromCtrl,
+                          icon: Icons.numbers,
+                          hint: "מ",
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: afterMealDiabetesToCtrl,
+                          icon: Icons.numbers,
+                          hint: "עד",
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: afterMealDiabetesFromCtrl,
+                          icon: Icons.numbers,
+                          hint: "מ",
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text("תרופות סכרת"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: DropdownButtonFormField(
+                            value: _medicationList[0],
+                            items: _medicationList
+                                .map((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(
+                                        e,
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ))
+                                .toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                _medicationSelectedVal = val as String;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.arrow_drop_down_circle,
+                              //color: Colors.purple,
+                            ),
+                            dropdownColor: Colors.deepPurple.shade50,
+                            decoration: const InputDecoration(
+                              labelText: "תרופה",
+                              labelStyle: TextStyle(color: Colors.purple),
+                              prefixIcon: Icon(
+                                Icons.medication_liquid,
+                                color: Colors.purple,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent)),
+                              //border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextField(
+                            controller: medicationNightCtrl,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "לילה",
+                              hintStyle: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextField(
+                            controller: medicationEveningCtrl,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "ערב",
+                              hintStyle: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextField(
+                            controller: medicationNoonCtrl,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "צהריים",
+                              hintStyle: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextField(
+                            controller: medicationMorningCtrl,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "בוקר",
+                              hintStyle: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        addDiseaseToList(_diseaseSelectedVal,
-                            formatter.format(_diseaseDate!));
+                        addMedicationToList(_medicationSelectedVal, medicationNightCtrl.text, medicationEveningCtrl.text, medicationNoonCtrl.text, medicationMorningCtrl.text);
                       });
                     },
                     style: ElevatedButton.styleFrom(primary: Colors.purple),
                     child: const Text(
-                      "הוסף מחלת רקע",
+                      "הוסף תרופה",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -794,7 +1097,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       padding: const EdgeInsets.symmetric(vertical: 5),
-                      itemCount: personalDiseasesKeyList.length,
+                      itemCount: personalMedicationsKeyList.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
@@ -802,14 +1105,195 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(personalDiseasesKeyList[index]),
-                              Text(personalDiseases[
-                                  personalDiseasesKeyList[index]]),
+                              Text(personalMedicationsKeyList[index]),
+                              Text(personalMedications[
+                              personalMedicationsKeyList[index]]),
                               IconButton(
                                   onPressed: () {
-                                    setState((){
+                                    setState(() {
+                                      removeMedicationFromList(
+                                          personalMedicationsKeyList[index]);
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    Icons.remove_circle,
+                                    color: Colors.grey,
+                                    size: 15,
+                                  ))
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text("בדיקות"),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: DropdownButtonFormField(
+                            value: _testList[0],
+                            items: _testList
+                                .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(
+                                e,
+                                textAlign: TextAlign.right,
+                              ),
+                            ))
+                                .toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                _testSelectedVal = val as String;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.arrow_drop_down_circle,
+                              //color: Colors.purple,
+                            ),
+                            dropdownColor: Colors.deepPurple.shade50,
+                            decoration: const InputDecoration(
+                              labelText: "בדיקה",
+                              labelStyle: TextStyle(color: Colors.purple),
+                              prefixIcon: Icon(
+                                Icons.health_and_safety,
+                                color: Colors.purple,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                  BorderSide(color: Colors.transparent)),
+                              //border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextField(
+                            controller: test2ndCtrl,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "ערך 2",
+                              hintStyle: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextField(
+                            controller: test1stCtrl,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "ערך 1",
+                              hintStyle: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime(2099))
+                              .then((date) {
+                            setState(() {
+                              _testDate = date;
+                            });
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(primary: Colors.purple),
+                        child: Text(
+                          _testDate == null
+                              ? 'תאריך בדיקה'
+                              : formatter.format(_testDate!),
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        addTestToList(_testSelectedVal, test1stCtrl.text, test2ndCtrl.text, formatter.format(_testDate!));
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(primary: Colors.purple),
+                    child: const Text(
+                      "הוסף בדיקה",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.purple[50],
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      itemCount: personalTestsKeyList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0.0, horizontal: 20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(personalTestsKeyList[index]),
+                              Text(personalTests[
+                              personalTestsKeyList[index]]),
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
                                       removeDiseaseFromList(
-                                          personalDiseasesKeyList[index]);
+                                          personalTestsKeyList[index]);
                                     });
                                   },
                                   icon: const Icon(
@@ -825,14 +1309,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ],
               ),
-            )),
-        Step(
-            state:
-                _activeStepIndex <= 4 ? StepState.indexed : StepState.complete,
-            isActive: _activeStepIndex >= 4,
-            title: const Text(""),
-            content: Center(
-              child: Text("שלב 5"),
             ))
       ];
 
@@ -1140,12 +1616,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!personalDiseasesKeyList.contains(name)) {
       personalDiseasesKeyList.add(name);
     }
-
   }
+
   void removeDiseaseFromList(name) {
     personalDiseases.remove(name);
     personalDiseasesKeyList.remove(name);
-    //personalDiseases[name] = date;
-    //personalDiseasesKeyList.add(name);
   }
+
+  void addMedicationToList(name, night, evening, noon, morning) {
+    personalMedications[name] = [night, evening, noon, morning].toString();
+    if (!personalMedicationsKeyList.contains(name)) {
+      personalMedicationsKeyList.add(name);
+    }
+  }
+
+  void removeMedicationFromList(name) {
+    personalMedications.remove(name);
+    personalMedicationsKeyList.remove(name);
+  }
+
+  void addTestToList(name, test1st, test2nd, date) {
+    personalTests[name] = [test1st, test2nd, date].toString();
+    if (!personalTestsKeyList.contains(name)) {
+      personalTestsKeyList.add(name);
+    }
+  }
+
+  void removeTestFromList(name) {
+    personalTests.remove(name);
+    personalTestsKeyList.remove(name);
+  }
+
 }

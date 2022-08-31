@@ -21,16 +21,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   _RegisterScreenState() {
     _genderSelectedVal = _genderList[0];
     _educationSelectedVal = _educationList[0];
+    _closenessSelectedVal = _closenessList[0];
   }
+
 
   late VoidCallback _onStepContinue;
   late VoidCallback _onStepCancel;
 
-  final nameCtrl = TextEditingController();
-
+  final firstNameCtrl = TextEditingController();
+  final lastNameCtrl = TextEditingController();
   //final emailCtrl = TextEditingController();
   final phoneCtrl = TextEditingController();
-
   //final passwordCtrl = TextEditingController();
   final employeeCtrl = TextEditingController();
 
@@ -39,7 +40,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final zipCtrl = TextEditingController();
   final addressCtrl = TextEditingController();
 
-  final caregiverNameCtrl = TextEditingController();
+  final caregiverFirstNameCtrl = TextEditingController();
+  final caregiverLastNameCtrl = TextEditingController();
   final caregiverPhoneCtrl = TextEditingController();
   final caregiverEmailCtrl = TextEditingController();
   final caregiverRelationCtrl = TextEditingController();
@@ -88,6 +90,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _doctorSelectedVal = "";
   final List _doctorList = [];
 
+  final _closenessList = ["ראשונה", "שניה", "אחר"];
+  String? _closenessSelectedVal = "";
+
   //final List<dynamic> _doctorListUpdated = [Doctor("רופא א'", 1)];
   final _diseaseList = [
     "Diabetes",
@@ -125,10 +130,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final personalTests = {};
   final personalTestsKeyList = [];
 
+  String country = "ישראל";
+
   @override
   void initState() {
     super.initState();
     clinicToList();
+    country = "ישראל";
     //doctorToList();
   }
 
@@ -161,10 +169,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
             content: Center(
               child: Column(
                 children: [
-                  RegTextField(
-                    textCtrl: nameCtrl,
-                    icon: CupertinoIcons.person_circle_fill,
-                    hint: "שם מלא",
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: lastNameCtrl,
+                          icon: CupertinoIcons.person_circle_fill,
+                          hint: "שם משפחה",
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: firstNameCtrl,
+                          icon: CupertinoIcons.person_circle_fill,
+                          hint: "שם פרטי",
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,
@@ -181,13 +205,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: DropdownButtonFormField(
+                            //alignment: Alignment.center,
                             value: _educationList[0],
                             items: _educationList
                                 .map((e) => DropdownMenuItem(
                                       value: e,
                                       child: Text(
-                                        e,
-                                        textAlign: TextAlign.right,
+                                          e,
+                                          textAlign: TextAlign.right,
                                       ),
                                     ))
                                 .toList(),
@@ -438,7 +463,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: RegTextField(
                           textCtrl: zipCtrl,
                           icon: Icons.numbers,
-                          hint: "זיפ",
+                          hint: "מיקוד",
+                          inputType: TextInputType.number,
                         ),
                       ),
                       const SizedBox(
@@ -455,10 +481,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: 10,
                       ),
                       Expanded(
-                        child: RegTextField(
-                          textCtrl: countryCtrl,
-                          icon: Icons.flag,
-                          hint: "מדינה",
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextFormField(
+                            //controller: countryCtrl,
+                            onSaved: (input) => setState(() {
+                              country = input!;
+                            }),
+                            textAlign: TextAlign.right,
+                            initialValue: country,
+                            decoration: const InputDecoration(
+                              suffixIcon: Icon(Icons.flag),
+                              border: InputBorder.none,
+                              //labelText: 'מדינה',
+                              //hintText: "מדינה",
+                              //hintStyle: TextStyle(fontSize: 12 ),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -575,7 +619,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             dropdownColor: Colors.deepPurple.shade50,
                             decoration: const InputDecoration(
-                              labelText: "קליניקה",
+                              labelText: "מרפאה",
                               labelStyle: TextStyle(color: Colors.purple),
                               prefixIcon: Icon(
                                 Icons.local_hospital,
@@ -598,11 +642,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  RegTextField(
-                    textCtrl: caregiverNameCtrl,
-                    icon: CupertinoIcons.person_circle_fill,
-                    hint: "שם מלא",
-                    inputType: TextInputType.name,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: caregiverLastNameCtrl,
+                          icon: CupertinoIcons.person_circle_fill,
+                          hint: "שם משפחה",
+                          inputType: TextInputType.name,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: caregiverFirstNameCtrl,
+                          icon: CupertinoIcons.person_circle_fill,
+                          hint: "שם פרטי",
+                          inputType: TextInputType.name,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,
@@ -625,12 +686,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  RegTextField(
-                    textCtrl: caregiverRelationCtrl,
-                    icon: Icons.family_restroom,
-                    hint: "קירבה",
-                    inputType: TextInputType.name,
+                  Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonFormField(
+                        value: _closenessList[0],
+                        items: _closenessList
+                            .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            e,
+                            textAlign: TextAlign.right,
+                          ),
+                        ))
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _closenessSelectedVal = val as String;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.arrow_drop_down_circle,
+                          //color: Colors.purple,
+                        ),
+                        dropdownColor: Colors.deepPurple.shade50,
+                        decoration: const InputDecoration(
+                          labelText: "קירבה",
+                          labelStyle: TextStyle(color: Colors.purple),
+                          prefixIcon: Icon(
+                            Icons.family_restroom,
+                            color: Colors.purple,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Colors.transparent)),
+                          //border: OutlineInputBorder(),
+                        ),
+                      ),
                   ),
+                  // RegTextField(
+                  //   textCtrl: caregiverRelationCtrl,
+                  //   icon: Icons.family_restroom,
+                  //   hint: "קירבה",
+                  //   inputType: TextInputType.name,
+                  // ),
                 ],
               ),
             )),
@@ -674,18 +776,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: RegTextField(
                           textCtrl: exerciseDurationCtrl,
                           icon: Icons.timer,
-                          hint: "משך זמן",
+                          hint: "משך זמן (ד')",
                           inputType: TextInputType.number,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 0,
                   ),
-                  const Text("תזונה - מומלצת"),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 35.0,top: 10),
+                      child: const Text("תזונאי"),
+                    ),
+                  ),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -872,12 +980,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(right: 15, left: 35),
+                    padding: const EdgeInsets.only(right: 35, left: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("טווח סוכר בצום"),
                         Text("טווח סוכר אחרי ארוחה"),
+                        Text("טווח סוכר בצום"),
                       ],
                     ),
                   ),
@@ -889,29 +997,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       Expanded(
                         child: RegTextField(
-                          textCtrl: fastDiabetesToCtrl,
-                          icon: Icons.numbers,
-                          hint: "עד",
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: RegTextField(
-                          textCtrl: fastDiabetesFromCtrl,
-                          icon: Icons.numbers,
-                          hint: "מ",
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      Expanded(
-                        child: RegTextField(
                           textCtrl: afterMealDiabetesToCtrl,
                           icon: Icons.numbers,
                           hint: "עד",
+                          inputType: TextInputType.number,
                         ),
                       ),
                       const SizedBox(
@@ -922,6 +1011,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           textCtrl: afterMealDiabetesFromCtrl,
                           icon: Icons.numbers,
                           hint: "מ",
+                          inputType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: fastDiabetesToCtrl,
+                          icon: Icons.numbers,
+                          hint: "עד",
+                          inputType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: RegTextField(
+                          textCtrl: fastDiabetesFromCtrl,
+                          icon: Icons.numbers,
+                          hint: "מ",
+                          inputType: TextInputType.number,
                         ),
                       ),
                     ],

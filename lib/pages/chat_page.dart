@@ -40,7 +40,7 @@ class _ChatPageState extends State<ChatPage> {
       color: Colors.white,
       child: Row(
         children: <Widget>[
-          IconBackground(icon: Icons.photo, onTap: (){}),
+          //IconBackground(icon: Icons.photo, onTap: (){}),
           Expanded(child: TextField(
             controller: sendCtrl,
             textAlign: TextAlign.right,
@@ -54,9 +54,10 @@ class _ChatPageState extends State<ChatPage> {
 
   _sendMessage(String text) {
     DateTime now = DateTime.now();
-    String formattedTime = DateFormat.jm().format(now);
+    //now = DateTime.now();
+    //String formattedTime = DateFormat.Hm().format(now);
     setState((){
-      messages.insert(0, MessageModel(sender: currentUser,time: DateFormat.jm().format(now),text: text,unread: true));
+      messages.insert(0, MessageModel(sender: currentUser,time: DateFormat('HH:mm').format(now),text: text,unread: true));
     });
     sendCtrl.clear();
   }

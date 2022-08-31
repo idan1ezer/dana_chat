@@ -45,7 +45,7 @@ class _ChatCombinedPageState extends State<ChatCombinedPage> {
         children: [
           Row(
             children: <Widget>[
-              IconBackground(icon: Icons.photo, onTap: (){}),
+              //IconBackground(icon: Icons.photo, onTap: (){}),
               Expanded(child: TextField(
                 controller: sendCtrl,
                 textAlign: TextAlign.right,
@@ -110,7 +110,7 @@ class _ChatCombinedPageState extends State<ChatCombinedPage> {
     DateTime now = DateTime.now();
     String formattedTime = DateFormat.jm().format(now);
     setState((){
-      messages.insert(0, MessageModel(sender: currentUser,time: DateFormat.jm().format(now),text: text,unread: true));
+      messages.insert(0, MessageModel(sender: currentUser,time: DateFormat('HH:mm').format(now),text: text,unread: true));
     });
     sendCtrl.clear();
   }

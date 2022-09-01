@@ -3,7 +3,6 @@ import 'package:dana_chat/widgets/avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dana_chat/widgets/icon_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -95,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.purple),
                             onPressed: () {
-                              changePassword(passwordCtrl.text);
+                              // changePassword(passwordCtrl.text);
                             },
                             child: const Text(
                               "שנה",
@@ -218,16 +217,16 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Future<void> changePassword(String password) async {
-    // need to change pw
+  // Future<void> changePassword(String password) async {
+  //   // need to change pw
 
-   final user = FirebaseAuth.instance.currentUser;
-    //final userCredential =
-        //await FirebaseAuth.instance.signInWithCredential(credential);
-    //final user = userCredential.user;
-    await user?.updatePassword(password);
+  // //  final user = FirebaseAuth.instance.currentUser;
+  //   //final userCredential =
+  //       //await FirebaseAuth.instance.signInWithCredential(credential);
+  //   //final user = userCredential.user;
+  //   await user?.updatePassword(password);
 
-  }
+  // }
 }
 
 class Item {

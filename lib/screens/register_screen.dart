@@ -1,13 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 //import 'package:dana_chat/models/clinic_model.dart';
 //import 'package:dana_chat/models/doctor_model.dart';
 import 'package:dana_chat/widgets/regWidgets/regWidgets.dart';
 import 'package:dana_chat/models/residentialStatus.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -68,7 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _genderList = ["זכר", "נקבה"];
   String? _genderSelectedVal = "";
-  final _educationList = ["ללא", "12 שנות לימוד", "תואר ראשון", "תואר שני"];
+  final _educationList = ["ללא", "בסיסי", "תואר ראשון", "תואר שני"];
   String? _educationSelectedVal = "";
   final _languageList = ["עברית", "אנגלית", "רוסית", "ערבית", "ספרדית"];
   String? _lang1SelectedVal = "";
@@ -98,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     "Diabetes",
     "Anthrax",
     "Brucellosis",
-    "Congenital rubella",
+    "Congenital",
     "Flu",
     "Giardiasis"
   ];
@@ -106,15 +106,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final personalDiseases = {};
   final personalDiseasesKeyList = [];
 
-  final _medicationList = [
-    "Insulin",
-    "Amylinomimetic",
-    "Alpha-glucosidase",
-    "Biguanides",
-    "Dopamine agonist",
-    "Meglitinides"
-  ];
-  String? _medicationSelectedVal = "";
+  final _types = {
+     '50mg': '1',
+    '100mg': '1',
+    '50mg': '2',
+    '75mg': '2',
+    '99mg': '3',
+    '101mg': '4',
+  };
+  String? _typeSelectedVal = "";
+  final List _typeList = [];
+
+  //final _clinicList = [Clinic("מאיר", 1), Clinic("איכילוב", 2), Clinic("העמק", 3)];
+  final _medications = {'Insulin': '1', 'Acamol': '2', 'Advil': '3', 'Biguanides': '4',};
+  String? _medicationSelectedVal = "Insulin";
+  final List _medicationList = [];
+
   final personalMedications = {};
   final personalMedicationsKeyList = [];
 
@@ -136,6 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     super.initState();
     clinicToList();
+    medicationToList();
     country = "ישראל";
     //doctorToList();
   }
@@ -155,8 +163,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   ];
   List<ResidentialStatus> selectedStatus = [];
 
-  final _auth = FirebaseAuth.instance;
-  final db = FirebaseFirestore.instance;
+  // final _auth = FirebaseAuth.instance;
+  // final db = FirebaseFirestore.instance;
 
   int _activeStepIndex = 0;
 
@@ -1055,18 +1063,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: DropdownButtonFormField(
-                            value: _medicationList[0],
+                            value: _typeSelectedVal,
+                            onChanged: (val) {
+                              setState(() {
+                                //_doctorList.clear();
+                                //doctorToList(_clinics[val]);
+                                //debugPrint(_clinics[val]);
+                                _typeSelectedVal = val as String;
+                              });
+                            },
+                            items: _typeList.map((type) {
+                              return DropdownMenuItem(
+                                value: type,
+                                child: Text(type, textAlign: TextAlign.right),
+                              );
+                            }).toList(),
+                            icon: const Icon(
+                              Icons.arrow_drop_down_circle,
+                              //color: Colors.purple,
+                            ),
+                            dropdownColor: Colors.deepPurple.shade50,
+                            decoration: const InputDecoration(
+                              labelText: "סוג",
+                              labelStyle: TextStyle(
+                                color: Colors.purple,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.healing,
+                                color: Colors.purple,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent)),
+                              //border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: DropdownButtonFormField(
+                            value: _medicationSelectedVal,
                             items: _medicationList
-                                .map((e) => DropdownMenuItem(
-                                      value: e,
+                                .map((medication) => DropdownMenuItem(
+                                      value: medication,
                                       child: Text(
-                                        e,
+                                        medication,
                                         textAlign: TextAlign.right,
                                       ),
                                     ))
                                 .toList(),
                             onChanged: (val) {
                               setState(() {
+                                _typeList.clear();
+                                typeToList(_medications[val]);
                                 _medicationSelectedVal = val as String;
                               });
                             },
@@ -1633,46 +1691,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void signUp(String name, String email, String phone, String password) async {
-    if (validate(name, email, phone, password)) {
-      try {
-        final credential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        //final user = UserModel(id: _auth.currentUser.toString(), name: name, imageUrl: "");
-        final user = {
-          "id": _auth.currentUser?.uid.toString(),
-          "name": name,
-          "image_url": " "
-        };
-        db
-            .collection("users")
-            .doc(user["id"])
-            .set(user)
-            .onError((error, stackTrace) => errorMessage = error.toString());
-      } on FirebaseAuthException catch (error) {
-        switch (error.code) {
-          case "invalid-email":
-            errorMessage = "Your email address appears to be malformed.";
-            break;
-          case "weak-password":
-            errorMessage = "The password provided is too weak.";
-            break;
-          case "too-many-requests":
-            errorMessage = "Too many requests";
-            break;
-          case "email-already-in-use":
-            errorMessage = "The account already exists for that email..";
-            break;
-          default:
-            errorMessage = "An undefined Error happened.";
-        }
-        Fluttertoast.showToast(msg: errorMessage!);
-      }
-    }
-  }
+  // void signUp(String name, String email, String phone, String password) async {
+  //   if (validate(name, email, phone, password)) {
+  //     try {
+  //       final credential =
+  //           await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //         email: email,
+  //         password: password,
+  //       );
+  //       //final user = UserModel(id: _auth.currentUser.toString(), name: name, imageUrl: "");
+  //       final user = {
+  //         "id": _auth.currentUser?.uid.toString(),
+  //         "name": name,
+  //         "image_url": " "
+  //       };
+  //       db
+  //           .collection("users")
+  //           .doc(user["id"])
+  //           .set(user)
+  //           .onError((error, stackTrace) => errorMessage = error.toString());
+  //     } on FirebaseAuthException catch (error) {
+  //       switch (error.code) {
+  //         case "invalid-email":
+  //           errorMessage = "Your email address appears to be malformed.";
+  //           break;
+  //         case "weak-password":
+  //           errorMessage = "The password provided is too weak.";
+  //           break;
+  //         case "too-many-requests":
+  //           errorMessage = "Too many requests";
+  //           break;
+  //         case "email-already-in-use":
+  //           errorMessage = "The account already exists for that email..";
+  //           break;
+  //         default:
+  //           errorMessage = "An undefined Error happened.";
+  //       }
+  //       Fluttertoast.showToast(msg: errorMessage!);
+  //     }
+  //   }
+  // }
 
   bool validate(String name, String email, String phone, String password) {
     if (!RegExp(r"^.{3,}$").hasMatch(name)) {
@@ -1721,6 +1779,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     });
     _doctorSelectedVal = _doctors[0];
+  }
+
+void medicationToList() {
+    _medications.forEach((key, value) {
+      _medicationList.add(key);
+    });
+    //_doctorList.add('1');
+  }
+
+  typeToList(medicationCode) {
+    _types.forEach((key, value) {
+      // debugPrint(medicationCode + " - " + value);
+      if (medicationCode == value) {
+        _typeList.add(key);
+      }
+    });
+    _typeSelectedVal = _types[0];
   }
 
   void addDiseaseToList(name, date) {

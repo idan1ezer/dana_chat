@@ -8,4 +8,12 @@ class UserModel {
     required this.name,
     required this.imageUrl,
   });
+
+   factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'],
+      name: json['name'],
+      imageUrl: json['imageUrl'],
+    );
+  }
 }

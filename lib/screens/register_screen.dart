@@ -2,6 +2,9 @@
 
 //import 'package:dana_chat/models/clinic_model.dart';
 //import 'package:dana_chat/models/doctor_model.dart';
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:dana_chat/widgets/regWidgets/regWidgets.dart';
 import 'package:dana_chat/models/residentialStatus.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +12,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:dana_chat/models/user_model.dart';
+import 'package:http/http.dart' as http;
+
+Future<UserModel> createUser(String title) async {
+  final response = await http.post(
+    Uri.parse('http://localhost:8085/iob/users'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'first_name': title,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    return UserModel.fromJson(jsonDecode(response.body));
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+    throw Exception('Failed to create user.');
+  }
+}
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({Key? key}) : super(key: key);
@@ -452,7 +479,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     icon: Icons.cases_rounded,
                     hint: "תעסוקה",
                     maxLines: 3,
-                  )
+                  ),
+                  ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            createUser(firstNameCtrl.text);
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(primary: Colors.purple),
+                        child: Text(
+                          "רישום",
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                 ],
               ),
             )),
@@ -1516,6 +1556,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1835,3 +1877,5 @@ void medicationToList() {
   }
 
 }
+
+
